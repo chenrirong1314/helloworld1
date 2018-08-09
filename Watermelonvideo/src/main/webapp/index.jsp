@@ -1,0 +1,143 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<header class="mui-bar mui-bar-nav" style="-webkit-tap-highlight-color:white;border: none;box-shadow: none;">
+		    <div class="mui-input-row mui-search">
+		   <!-- 	<img class="mui-icon" src="img/qq.ico"/>-->
+		    	<span class="mui-icon " style="top:-4px;"> <img src="img/qq.ico" width="30px"/></span>
+		        <input type="search" class="mui-input-clear" placeholder="大家都在搜：全球最赚钱高铁" style="width: 85%;float: right;">
+		   		
+		    </div>
+		 
+		</header>
+		
+		
+		<div class="mui-content">
+		    <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="border: hidden;">
+		        <div class="mui-scroll" id="newtitle">
+		        	
+		            <a class="mui-control-item " v-for="mes in message">
+		         {{mes.tname}}
+		            </a>
+		           
+		        </div>
+		    </div>
+		</div>
+		
+	<nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active">
+	        <span class="mui-icon mui-icon-home"></span>
+	        <span class="mui-tab-label">新闻</span>
+	    </a>
+	    <a class="mui-tab-item">
+	        <span class="mui-icon mui-icon-videocam"></span>
+	        <span class="mui-tab-label">视频</span>
+	    </a>
+	    <a class="mui-tab-item">
+	        <span class="mui-icon mui-icon-email"></span>
+	        <span class="mui-tab-label">推荐</span>
+	    </a>
+	    <a class="mui-tab-item">
+	        <span class="mui-icon mui-icon-person"></span>
+	        <span class="mui-tab-label">我</span>
+	    </a>
+	</nav>
+	
+</body>
+<script type="text/javascript" src="js/mui.min.js" ></script>
+<script src="js/vue.min.js"></script>
+<script>
+	mui.init();
+	var vueTopic;
+	var views=[];//保存所有的webview
+	var currentView;
+	mui.plusReady(function(){
+		currentView = plus.webview.currentWebview();
+		mui.getJSON("http://192.168.43.57:8080/Watermelonvideo/TopicControl/",function(params){
+			
+			var titleVue=new Vue({
+				el:"#newtitle",
+				data:{message:params}
+			})
+			document.querySelector('#newtitle a:nth-of-type(1)').classList.add('mui-active');
+			for(var i=0;i<params.length;i++){
+			  			var view = plus.webview.create("newslist.html","newslist.html"+i,{
+			  				top:"82px",
+			  				bottom:"51px",
+			  				left :(i*100)+"%"
+			  			},{
+			  				tid :i
+			  			});
+			  			currentView.append(view);
+			  			views.push(view);
+			  			if(i==0){
+
+			  				//第一个立即出发加载事件
+			  				mui.fire(view,"loadNews",null);
+			  				view.show();//显示第一个
+			  			}
+			  			
+			  		}
+			  		
+			  		var len = views.length;
+				   //为子页面添加drag方法
+				   for(var i=0;i<len;i++){
+				   	//往左滑
+				   	if(i<len-1){
+					   	views[i].drag(
+					   		{direction:"left",moveMode:"followFinger"},
+					   		{view:views[i+1],moveMode:"follow"},
+					   		function(e){
+					   			console.log(JSON.stringify(e));
+					   			if(e.type=="end" && e.result==true){
+
+					   				var v = plus.webview.getWebviewById(e.otherId);
+					   				console.log("====="+JSON.stringify(e));
+					   				mui.fire(v,"loadNews",{});
+					   			}
+					   		}
+					   	);
+				   	}
+				   	//往右滑
+				   	if(i>0){
+					   	views[i].drag(
+					   		{direction:"right",moveMode:"followFinger"},
+					   		{view:views[i-1],moveMode:"follow"},
+					   		function(e){
+	//				   			console.log("我滑...."+JSON.stringify(e));
+					   			if(e.type=="end" && e.result){
+					   			}
+					   		}
+					   	);
+				   	}
+				   }
+		})
+		
+		/*mui.getJSON("http://192.168.43.67:8080/txwapp/getnews",function(params){
+			//mui.alert(JSON.stringify(params));
+			//循环创建webview
+			  		
+		})*/
+		
+
+	})
+	mui.plusReady(function(){
+		document.querySelector(".mui-bar-tab a:nth-of-type(2)").addEventListener("tap",function(){
+			//console.log(document.querySelector(".mui-bar-tab a:nth-of-type(2)"));
+			mui.openWindow({  
+    		url: "vido.html",  
+   			 id: "vido.html",  
+   
+		})
+	})
+	})
+
+</script>
+</html>
