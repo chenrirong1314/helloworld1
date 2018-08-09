@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accp.mapper.PraiserecordMapper" >
+  <resultMap id="BaseResultMap" type="com.accp.entity.Praiserecord" >
+    <id column="praiseId" property="praiseid" jdbcType="INTEGER" />
+    <result column="stateId" property="stateid" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    praiseId, stateId, userid, createTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from praiserecord
+    where praiseId = #{praiseid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from praiserecord
+    where praiseId = #{praiseid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.accp.entity.Praiserecord" >
+    insert into praiserecord (praiseId, stateId, userid, 
+      createTime)
+    values (#{praiseid,jdbcType=INTEGER}, #{stateid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.accp.entity.Praiserecord" >
+    insert into praiserecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="praiseid != null" >
+        praiseId,
+      </if>
+      <if test="stateid != null" >
+        stateId,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="praiseid != null" >
+        #{praiseid,jdbcType=INTEGER},
+      </if>
+      <if test="stateid != null" >
+        #{stateid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.accp.entity.Praiserecord" >
+    update praiserecord
+    <set >
+      <if test="stateid != null" >
+        stateId = #{stateid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where praiseId = #{praiseid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.accp.entity.Praiserecord" >
+    update praiserecord
+    set stateId = #{stateid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where praiseId = #{praiseid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.accp.mapper.UsertabMapper">
+
+<insert id="insertusertab" parameterType="Usertab">
+INSERT INTO usertab (username,nickname,`password`,`createTime`) VALUES(#{username},#{nickname},#{password},NOW());	
+</insert>
+<select id="userlogin" resultType="Usertab">
+SELECT * FROM usertab WHERE username=#{username} AND PASSWORD=#{password}
+</select>
+</mapper>
